@@ -7,6 +7,7 @@ LABEL Description="Install MetFamily + underlying R shiny-server + relevant bioc
 
 
 # Environment variables
+ENV PATH /usr/lib/rstudio-server/bin/:$PATH
 ENV PACK_R="cba devtools DT FactoMineR htmltools Matrix matrixStats plotrix rCharts rmarkdown shiny shinyBS shinyjs squash stringi tools"
 ENV PACK_BIOC="mzR pcaMethods xcms"
 ENV PACK_GITHUB=""
@@ -22,6 +23,9 @@ RUN echo "deb https://mirrors.ebi.ac.uk/CRAN/bin/linux/ubuntu trusty/" >> /etc/a
 # Update & upgrade sources
 RUN apt-get -y update
 RUN apt-get -y dist-upgrade
+
+# Install supervisord
+RUN apt-get -y install supervisor
 
 # Install r related packages
 RUN apt-get -y install texlive-binaries r-base
@@ -58,7 +62,8 @@ RUN useradd -r -m shiny
 RUN mkdir -p /var/log/shiny-server
 RUN mkdir -p /srv/shiny-server
 RUN mkdir -p /var/lib/shiny-server
-RUN chown shiny /var/log/shiny-server
+RUN chown -R shiny:shiny /var/log/shiny-server
+RUN chown -R shiny:shiny /srv/shiny-server
 RUN mkdir -p /etc/shiny-server
 RUN wget https://raw.github.com/rstudio/shiny-server/master/config/upstart/shiny-server.conf -O /etc/init/shiny-server.conf
 RUN cp -r /usr/src/shiny-server/samples/* /srv/shiny-server/
