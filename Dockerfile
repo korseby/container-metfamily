@@ -64,6 +64,11 @@ RUN wget https://raw.github.com/rstudio/shiny-server/master/config/upstart/shiny
 RUN cp -r /usr/src/shiny-server/samples/* /srv/shiny-server/
 RUN wget https://raw.githubusercontent.com/rstudio/shiny-server/master/config/default.config -O /etc/shiny-server/shiny-server.conf
 
+# Configure supervisor
+ADD supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+RUN mkdir -p /var/log/supervisor
+RUN chmod 777 -R /var/log/supervisor
+
 # Using official github repository
 RUN mv /srv/shiny-server /srv/shiny-server_orig
 WORKDIR /srv
@@ -75,4 +80,5 @@ EXPOSE 3838
 
 # Define Entry point script
 WORKDIR /
-ENTRYPOINT ["/usr/bin/shiny-server","--pidfile=/var/run/shiny-server.pid"]
+#ENTRYPOINT ["/usr/bin/shiny-server","--pidfile=/var/run/shiny-server.pid"]
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
