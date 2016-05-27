@@ -14,3 +14,5 @@ NAME="korseby/metfamily"
 # Build docker
 docker build --no-cache --rm=true $CPU_SHARES $CPU_SETS $CPU_MEMS $MEM --tag=$NAME .
 
+# Push docker image to docker hub
+docker push $NAME

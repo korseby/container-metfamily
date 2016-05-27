@@ -1,0 +1,103 @@
+metfamily0:
+  container_name: metfamily0
+  image: korseby/metfamily
+  volumes:
+  - /vol/R/shiny/srv/shiny-server/MetFam:/vol/R/shiny/srv/shiny-server/MetFam
+  expose:
+    - 3838
+
+metfamily1:
+  container_name: metfamily1
+  image: korseby/metfamily
+  volumes:
+  - /vol/R/shiny/srv/shiny-server/MetFam:/vol/R/shiny/srv/shiny-server/MetFam
+  expose:
+    - 3838
+
+metfamily2:
+  container_name: metfamily2
+  image: korseby/metfamily
+  volumes:
+  - /vol/R/shiny/srv/shiny-server/MetFam:/vol/R/shiny/srv/shiny-server/MetFam
+  expose:
+    - 3838
+
+metfamily3:
+  container_name: metfamily3
+  image: korseby/metfamily
+  volumes:
+  - /vol/R/shiny/srv/shiny-server/MetFam:/vol/R/shiny/srv/shiny-server/MetFam
+  expose:
+    - 3838
+
+metfamily4:
+  container_name: metfamily4
+  image: korseby/metfamily
+  volumes:
+  - /vol/R/shiny/srv/shiny-server/MetFam:/vol/R/shiny/srv/shiny-server/MetFam
+  expose:
+    - 3838
+
+metfamily5:
+  container_name: metfamily5
+  image: korseby/metfamily
+  volumes:
+  - /vol/R/shiny/srv/shiny-server/MetFam:/vol/R/shiny/srv/shiny-server/MetFam
+  expose:
+    - 3838
+
+metfamily6:
+  container_name: metfamily6
+  image: korseby/metfamily
+  volumes:
+  - /vol/R/shiny/srv/shiny-server/MetFam:/vol/R/shiny/srv/shiny-server/MetFam
+  expose:
+    - 3838
+
+metfamily7:
+  container_name: metfamily7
+  image: korseby/metfamily
+  volumes:
+  - /vol/R/shiny/srv/shiny-server/MetFam:/vol/R/shiny/srv/shiny-server/MetFam
+  expose:
+    - 3838
+
+metfamily8:
+  container_name: metfamily8
+  image: korseby/metfamily
+  volumes:
+  - /vol/R/shiny/srv/shiny-server/MetFam:/vol/R/shiny/srv/shiny-server/MetFam
+  expose:
+    - 3838
+
+metfamily9:
+  container_name: metfamily9
+  image: korseby/metfamily
+  volumes:
+  - /vol/R/shiny/srv/shiny-server/MetFam:/vol/R/shiny/srv/shiny-server/MetFam
+  expose:
+    - 3838
+
+haproxy:
+  container_name: metfamily_haproxy
+  build: metfamily-haproxy
+  volumes:
+   - metfamily-haproxy:/haproxy-override
+  links:
+   - metfamily0
+   - metfamily1
+   - metfamily2
+   - metfamily3
+   - metfamily4
+   - metfamily5
+   - metfamily6
+   - metfamily7
+   - metfamily8
+   - metfamily9
+  ports:
+   - "9001:80"
+   - "9002:70"
+  expose:
+   - "80"
+   - "70"
+

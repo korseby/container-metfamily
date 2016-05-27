@@ -23,9 +23,11 @@ PORT_DOCKER=3838
 
 
 
-# Run docker
-docker run --publish=${PORT_PUB}:${PORT_DOCKER} --log-driver=syslog $VOL $CPU_SHARES $CPU_SETS $CPU_MEMS $MEM --name="$(echo ${NAME} | sed -e 's/.*\///')-run" -i -t -d $NAME
+# Run single docker
+#docker run --publish=${PORT_PUB}:${PORT_DOCKER} --log-driver=syslog $VOL $CPU_SHARES $CPU_SETS $CPU_MEMS $MEM --name="$(echo ${NAME} | sed -e 's/.*\///')-run" -i -t -d $NAME
 
+# Run docker-compose
+docker-compose up -d -f docker-compose.yaml
 
 
 # Detach/Attach docker
