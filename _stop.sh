@@ -1,4 +1,4 @@
 #!/bin/sh
 
 # Stop docker-compose
-docker-compose down -f docker-compose.yaml
+docker-compose -f docker-compose.yaml down
