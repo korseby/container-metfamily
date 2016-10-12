@@ -14,7 +14,6 @@ ADD start.sh /haproxy-start
 VOLUME ["/haproxy-override"]
 
 # Expose ports
-EXPOSE 70
 EXPOSE 80
 EXPOSE 443
 
