@@ -1,4 +1,4 @@
-FROM ubuntu:trusty
+FROM ubuntu:xenial
 
 MAINTAINER Kristian Peters <kpeters@ipb-halle.de>
 
@@ -7,18 +7,18 @@ LABEL Description="MetFamily helps identifying metabolites and groups them into 
 
 
 # Environment variables
+ENV METFAMILY_BRANCH="master"
 ENV PATH /usr/lib/rstudio-server/bin/:$PATH
 ENV PACK_R="cba colourpicker devtools DT FactoMineR htmltools Matrix matrixStats plotrix rCharts rmarkdown shiny shinyBS shinyjs squash stringi tools"
+ENV PACK_R="cba colourpicker devtools DT htmltools Matrix matrixStats plotrix rCharts rmarkdown shiny shinyBS shinyjs squash stringi tools"
 ENV PACK_BIOC="mzR pcaMethods xcms"
 ENV PACK_GITHUB=""
-
-
 
 # Add cran R backport
 RUN apt-get -y update
 RUN apt-get -y install apt-transport-https
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E084DAB9
-RUN echo "deb https://mirrors.ebi.ac.uk/CRAN/bin/linux/ubuntu trusty/" >> /etc/apt/sources.list
+RUN echo "deb https://cran.uni-muenster.de/bin/linux/ubuntu xenial/" >> /etc/apt/sources.list
 
 # Update & upgrade sources
 RUN apt-get -y update
@@ -34,13 +34,13 @@ RUN apt-get -y install texlive-binaries r-base
 RUN apt-get -y install netcdf-bin libnetcdf-dev libdigest-sha-perl
 
 # Install development files needed
-RUN apt-get -y install git python xorg-dev libglu1-mesa-dev freeglut3-dev libgomp1 libxml2-dev gcc g++ libgfortran-4.8-dev libcurl4-gnutls-dev cmake wget ed libssl-dev
+RUN apt-get -y install git python xorg-dev libglu1-mesa-dev freeglut3-dev libgomp1 libxml2-dev gcc g++ libgfortran-4.8-dev libcurl4-gnutls-dev cmake wget ed libssl-dev gdebi-core
 
 # Clean up
 RUN apt-get -y clean && apt-get -y autoremove && rm -rf /var/lib/{cache,log}/ /tmp/* /var/tmp/*
 
 # Install R packages
-RUN for PACK in $PACK_R; do R -e "install.packages(\"$PACK\", repos='https://cran.rstudio.com/')"; done
+RUN for PACK in $PACK_R; do R -e "install.packages(\"$PACK\", repos='https://cran.r-project.org/')"; done
 
 # Install Bioconductor packages
 RUN R -e "source('https://bioconductor.org/biocLite.R'); biocLite(\"BiocInstaller\", dep=TRUE, ask=FALSE)"
@@ -55,6 +55,7 @@ RUN git clone https://github.com/rstudio/shiny-server.git
 WORKDIR /usr/src/shiny-server
 RUN mkdir tmp
 WORKDIR /usr/src/shiny-server/tmp
+RUN ../external/node/install-node.sh
 RUN DIR=`pwd`; PATH=$DIR/../bin:$PATH; PYTHON=`which python`; cmake -DCMAKE_INSTALL_PREFIX=/usr/local -DPYTHON="$PYTHON" ../ && make && mkdir ../build && (cd .. && ./bin/npm --python="$PYTHON" rebuild)
 RUN DIR=`pwd`; PATH=$DIR/../bin:$PATH; PYTHON=`which python`; (cd .. && ./bin/npm --python="$PYTHON" install && ./bin/node ./ext/node/lib/node_modules/npm/node_modules/node-gyp/bin/node-gyp.js --python="$PYTHON" rebuild)
 RUN make install
@@ -78,7 +79,7 @@ RUN chmod 777 -R /var/log/supervisor
 # Using official github repository
 RUN mv /srv/shiny-server /srv/shiny-server_orig
 WORKDIR /srv
-RUN git clone https://github.com/Treutler/MetFamily
+RUN git clone -b $METFAMILY_BRANCH https://github.com/ipb-halle/MetFamily
 RUN mv MetFamily shiny-server
 
 # Expose port
@@ -88,3 +89,4 @@ EXPOSE 3838
 WORKDIR /
 #ENTRYPOINT ["/usr/bin/shiny-server","--pidfile=/var/run/shiny-server.pid"]
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+
